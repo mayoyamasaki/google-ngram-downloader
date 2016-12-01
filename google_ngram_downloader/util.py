@@ -89,13 +89,14 @@ def count_coccurrence(records, index):
     return counter
 
 
-def iter_google_store(ngram_len, lang="eng", indices=None, verbose=False):
+def iter_google_store(ngram_len, lang="eng", indices=None, verbose=False, output=None):
     """Iterate over the collection files stored at Google.
 
     :param int ngram_len: the length of ngrams to be streamed.
     :param str lang: the langueage of the ngrams.
     :param iter indices: the file indices to be downloaded.
     :param bool verbose: if `True`, then the debug information is shown to `sys.stderr`.
+    :param str output: check local file to pass downloaded file if not `None`.
 
     """
     version = '20120701'
@@ -110,6 +111,17 @@ def iter_google_store(ngram_len, lang="eng", indices=None, verbose=False):
             version=version,
             index=index,
         )
+
+        if output is not None and output.join(fname).check():
+            if verbose:
+                sys.stderr.write(
+                    'Found {fname} \n'
+                    ''.format(
+                        fname=fname,
+                    ),
+                )
+                sys.stderr.flush()
+            continue
 
         url = URL_TEMPLATE.format(fname)
 
